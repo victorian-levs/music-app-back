@@ -1,0 +1,4 @@
+jwt:
+  secret: sadfDRE45FDWt65gVictor1V4
+  access-token-expiration: 900000
+  refresh-token-expiration: 604800000
