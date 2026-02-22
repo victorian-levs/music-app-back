@@ -1,4 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/music_db
+    username: admin
+    password: admin
+    hikari:
+      schema: music_schema
+      connection-init-sql: CREATE SCHEMA IF NOT EXISTS music_schema
+      connection-timeout: 10000
+  jpa:
+    generate-ddl: true
+    open-in-view: false
+
 jwt:
-  secret: sadfDRE45FDWt65gVictor1V4
-  access-token-expiration: 86400000
+  secret: "RANDOM_LONG_SECRET_KEY_THAT_IS_AT_LEAST_32_CHARS"
+  access-token-expiration: 900000
   refresh-token-expiration: 604800000
