@@ -82,14 +82,7 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<MeResponse> me (Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-
-        return ResponseEntity.ok(
-                new MeResponse(
-                        user.getId(),
-                        user.getEmail()
-                )
-        );
+        return ResponseEntity.ok(authService.getCurrentUser(authentication));
     }
 
     private String extractRefreshFromCookies(HttpServletRequest request) {

@@ -2,6 +2,7 @@ package com.github.vityan55.musicapp.service;
 
 import com.github.vityan55.musicapp.web.auth.dto.LoginRequest;
 import com.github.vityan55.musicapp.web.auth.dto.LoginResult;
+import com.github.vityan55.musicapp.web.auth.dto.MeResponse;
 import com.github.vityan55.musicapp.web.auth.dto.RegisterRequest;
 import com.github.vityan55.musicapp.entity.User;
 import com.github.vityan55.musicapp.entity.UserRole;
@@ -11,6 +12,7 @@ import com.github.vityan55.musicapp.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -85,5 +87,11 @@ public class AuthService {
 
         log.info("Token refresh successful. Email: {}", email);
         return new LoginResult(newAccess, newRefresh);
+    }
+
+    public MeResponse getCurrentUser(Authentication authentication) {
+        log.info("Getting current user");
+        User user = (User) authentication.getPrincipal();
+        return new MeResponse(user.getId(), user.getEmail());
     }
 }
