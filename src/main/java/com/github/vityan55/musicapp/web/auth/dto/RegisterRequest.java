@@ -1,3 +1,6 @@
 package com.github.vityan55.musicapp.web.auth.dto;
 
-public record RegisterRequest(String email, String password) {}
+import com.github.vityan55.musicapp.annotation.ValidPassword;
+import jakarta.validation.constraints.NotBlank;
+
+public record RegisterRequest(@NotBlank String email, @NotBlank @ValidPassword String password) {}

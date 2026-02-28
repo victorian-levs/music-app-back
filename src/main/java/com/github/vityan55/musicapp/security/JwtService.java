@@ -24,7 +24,7 @@ public class JwtService {
 
     public String generateToken(User user, long expiration) {
         return Jwts.builder()
-                .setSubject(user.getEmail())
+                .setSubject(user.getId().toString())
                 .claim("role", user.getUserRole().name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
@@ -40,7 +40,7 @@ public class JwtService {
         return generateToken(user, jwtProperties.getRefreshTokenExpiration());
     }
 
-    public String extractEmail(String token) {
+    public String extractId(String token) {
         return parseClaims(token).getSubject();
     }
 

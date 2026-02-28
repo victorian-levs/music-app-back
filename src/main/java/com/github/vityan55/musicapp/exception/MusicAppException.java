@@ -1,7 +1,9 @@
 package com.github.vityan55.musicapp.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class MusicAppException extends RuntimeException {
     private final HttpStatus httpStatus;
 
@@ -29,7 +31,4 @@ public class MusicAppException extends RuntimeException {
         this.httpStatus = httpStatus;
     }
 
-    public HttpStatus getHttpStatus() {
-        return httpStatus;
-    }
 }

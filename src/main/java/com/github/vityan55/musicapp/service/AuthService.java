@@ -72,12 +72,12 @@ public class AuthService {
             throw new MusicAppException("Invalid refresh token", HttpStatus.UNAUTHORIZED);
         }
 
-        String email = jwtService.extractEmail(refreshToken);
+        String userId = jwtService.extractId(refreshToken);
 
-        log.debug("Finding user by email to refresh: {}", email);
-        User user = userRepository.findByEmail(email).orElseThrow(
+        log.debug("Finding user by id to refresh: {}", userId);
+        User user = userRepository.findById(Long.valueOf(userId)).orElseThrow(
                 () -> {
-                    log.warn("Refresh failed. User not found for refresh token. Email: {}", email);
+                    log.warn("Refresh failed. User not found for refresh token. ID: {}", userId);
                     return new MusicAppException("User not found for refresh token", HttpStatus.UNAUTHORIZED);
                 }
         );
@@ -85,7 +85,7 @@ public class AuthService {
         String newAccess = jwtService.generateAccessToken(user);
         String newRefresh = jwtService.generateRefreshToken(user);
 
-        log.info("Token refresh successful. Email: {}", email);
+        log.info("Token refresh successful. ID: {}", userId);
         return new LoginResult(newAccess, newRefresh);
     }
 

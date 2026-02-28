@@ -2,10 +2,10 @@ package com.github.vityan55.musicapp.web.auth;
 
 import com.github.vityan55.musicapp.service.AuthService;
 import com.github.vityan55.musicapp.web.auth.dto.*;
-import com.github.vityan55.musicapp.entity.User;
 import com.github.vityan55.musicapp.exception.MusicAppException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
         authService.register(request);
 
         return ResponseEntity
@@ -30,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginResult result = authService.login(request);
 
         ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", result.refreshToken())
@@ -66,7 +66,11 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout() {
+    public ResponseEntity<Void> logout(Authentication authentication) {
+        if (authentication == null || authentication.getPrincipal() == null){
+            throw new MusicAppException("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+
         ResponseCookie deleteCookie = ResponseCookie.from("refresh_token", "")
                 .httpOnly(true)
                 .secure(false)
