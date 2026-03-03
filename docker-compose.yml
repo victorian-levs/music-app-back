@@ -1,7 +1,7 @@
 version: '4'
 
 services:
-  postgres-blubber:
+  postgres-music:
     image: postgres:16.1
     environment:
       - POSTGRES_DB=music_db
