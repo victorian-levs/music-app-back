@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
+    @Transactional
     public void register(RegisterRequest request){
         log.info("User registration started. Email = {}", request.email());
 
@@ -92,7 +94,15 @@ public class AuthService {
 
     public MeResponse getCurrentUser(Authentication authentication) {
         log.info("Getting current user");
-        User user = (User) authentication.getPrincipal();
+        User userRequest = (User) authentication.getPrincipal();
+
+        User user = userRepository.findById(userRequest.getId()).orElseThrow(
+                () -> {
+                    log.warn("Getting info about current user failed. User not found. ID: {}", userRequest.getId());
+                    return new MusicAppException("User not found", HttpStatus.NOT_FOUND);
+                }
+        );
+
         return new MeResponse(user.getId(), user.getEmail());
     }
 }
