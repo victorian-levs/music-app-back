@@ -1,13 +1,11 @@
 package com.github.vityan55.musicapp.service;
 
-import com.github.vityan55.musicapp.entity.Artist;
 import com.github.vityan55.musicapp.entity.User;
 import com.github.vityan55.musicapp.exception.MusicAppException;
 import com.github.vityan55.musicapp.repository.ArtistRepository;
 import com.github.vityan55.musicapp.repository.SubscriptionRepository;
 import com.github.vityan55.musicapp.repository.UserRepository;
 import com.github.vityan55.musicapp.security.JwtService;
-import com.github.vityan55.musicapp.web.auth.dto.LoginRequest;
 import com.github.vityan55.musicapp.web.auth.dto.LoginResult;
 import com.github.vityan55.musicapp.web.user.dto.UpdatePasswordRequest;
 import com.github.vityan55.musicapp.web.user.dto.UpdatePersonalRequest;
@@ -74,8 +72,6 @@ public class UserService {
         log.info("Saving user with id: {}", user.getId());
         user.setUsername(request.username());
 
-        userRepository.save(user);
-
         return new UserDto(user.getId(), user.getEmail(), user.getUsername());
     }
 
@@ -101,8 +97,6 @@ public class UserService {
 
         log.info("Update password of user with id: {}", user.getId());
         user.setPassword(passwordEncoder.encode(request.newPassword()));
-
-        userRepository.save(user);
 
         String access = jwtService.generateAccessToken(user);
         String refresh = jwtService.generateRefreshToken(user);

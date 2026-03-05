@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "track",
@@ -13,6 +15,7 @@ import java.time.LocalDate;
 )
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -37,4 +40,7 @@ public class Track {
 
     @Column(nullable = false)
     private LocalDate releaseDate;
+
+    @OneToMany(mappedBy = "track")
+    private List<Feat> feats = new ArrayList<>();
 }
