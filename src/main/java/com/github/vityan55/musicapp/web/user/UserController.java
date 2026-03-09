@@ -1,5 +1,6 @@
 package com.github.vityan55.musicapp.web.user;
 
+import com.github.vityan55.musicapp.entity.User;
 import com.github.vityan55.musicapp.service.UserService;
 import com.github.vityan55.musicapp.web.auth.dto.AuthResponse;
 import com.github.vityan55.musicapp.web.auth.dto.LoginResult;
@@ -12,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,12 +24,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<UserWithTypeDto> getProfile(Authentication authentication) {
-        return ResponseEntity.ok(userService.getUser(authentication));
+    public ResponseEntity<UserWithTypeDto> getProfile(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(userService.getUser(user.getId()));
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteProfile(Authentication authentication) {
+    public ResponseEntity<Void> deleteProfile(@AuthenticationPrincipal User user) {
         ResponseCookie deleteCookie = ResponseCookie.from("refresh_token", "")
                 .httpOnly(true)
                 .secure(false)
@@ -36,7 +37,7 @@ public class UserController {
                 .maxAge(0)
                 .build();
 
-        userService.deleteUser(authentication);
+        userService.deleteUser(user.getId());
 
         return ResponseEntity
                 .noContent()
@@ -45,15 +46,15 @@ public class UserController {
     }
 
     @PatchMapping("/personal")
-    public ResponseEntity<UserDto> updatePersonal(Authentication authentication,
+    public ResponseEntity<UserDto> updatePersonal(@AuthenticationPrincipal User user,
                                                   @Valid @RequestBody UpdatePersonalRequest request) {
-        return ResponseEntity.ok(userService.updatePersonal(authentication, request));
+        return ResponseEntity.ok(userService.updatePersonal(user.getId(), request));
     }
 
     @PatchMapping("/credentials")
-    public ResponseEntity<AuthResponse> updatePassword(Authentication authentication,
+    public ResponseEntity<AuthResponse> updatePassword(@AuthenticationPrincipal User user,
                                                        @Valid @RequestBody UpdatePasswordRequest request) {
-        LoginResult result = userService.updatePassword(authentication, request);
+        LoginResult result = userService.updatePassword(user.getId(), request);
 
         ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", result.refreshToken())
                 .httpOnly(true)

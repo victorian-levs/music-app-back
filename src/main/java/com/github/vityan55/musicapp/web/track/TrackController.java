@@ -1,6 +1,7 @@
 package com.github.vityan55.musicapp.web.track;
 
 import com.github.vityan55.musicapp.entity.Track;
+import com.github.vityan55.musicapp.entity.User;
 import com.github.vityan55.musicapp.repository.specification.TrackFilter;
 import com.github.vityan55.musicapp.service.TrackService;
 import com.github.vityan55.musicapp.web.dto.PageResponse;
@@ -11,7 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,17 +38,24 @@ public class TrackController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<TrackDto>createTrack(Authentication authentication,
+    public ResponseEntity<TrackDto>createTrack(@AuthenticationPrincipal User user,
                                                @Valid @RequestBody CreateTrackRequest request
     ) {
-        return ResponseEntity.ok(trackService.create(request, authentication));
+        return ResponseEntity.ok(trackService.create(request, user.getId()));
     }
 
     @PatchMapping("/{trackId}")
-    public ResponseEntity<TrackDto> updateTrack(Authentication authentication,
+    public ResponseEntity<TrackDto> updateTrack(@AuthenticationPrincipal User user,
                                                 @Valid @RequestBody UpdateTrackRequest request,
                                                 @PathVariable Long trackId) {
-        return ResponseEntity.ok(trackService.updateTrack(authentication, request, trackId));
+        return ResponseEntity.ok(trackService.updateTrack(user.getId(), request, trackId));
+    }
+
+    @DeleteMapping("/{trackId}")
+    public ResponseEntity<Void> deleteArtist(@AuthenticationPrincipal User user,
+                                             @PathVariable Long trackId) {
+        trackService.delete(user.getId(), trackId);
+        return ResponseEntity.noContent().build();
     }
 
     private ResponseEntity<PageResponse<TrackDto>> constructFromPage(Page<Track> page) {

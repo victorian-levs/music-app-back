@@ -12,7 +12,6 @@ import com.github.vityan55.musicapp.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,13 +91,12 @@ public class AuthService {
         return new LoginResult(newAccess, newRefresh);
     }
 
-    public MeResponse getCurrentUser(Authentication authentication) {
+    public MeResponse getCurrentUser(Long userId) {
         log.info("Getting current user");
-        User userRequest = (User) authentication.getPrincipal();
 
-        User user = userRepository.findById(userRequest.getId()).orElseThrow(
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> {
-                    log.warn("Getting info about current user failed. User not found. ID: {}", userRequest.getId());
+                    log.warn("Getting info about current user failed. User not found. ID: {}", userId);
                     return new MusicAppException("User not found", HttpStatus.NOT_FOUND);
                 }
         );
