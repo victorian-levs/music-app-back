@@ -61,6 +61,7 @@ public class TrackController {
     private ResponseEntity<PageResponse<TrackDto>> constructFromPage(Page<Track> page) {
         var content = page.getContent().stream()
                 .map(track -> new TrackDto(
+                        track.getId(),
                         track.getTitle(),
                         new TrackArtistDto(track.getMainArtist().getId(), track.getMainArtist().getArtistName()),
                         track.getFeats().stream()

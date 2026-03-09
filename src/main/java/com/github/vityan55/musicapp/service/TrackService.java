@@ -86,6 +86,7 @@ public class TrackService {
         }
 
         return new TrackDto(
+                newTrack.getId(),
                 newTrack.getTitle(),
                 new TrackArtistDto(mainArtist.getId(), mainArtist.getArtistName()),
                 featRepository.findArtistsNameAndIdByTrackId(track.getId()),
@@ -120,6 +121,7 @@ public class TrackService {
         track.setTitle(request.title());
 
         return new TrackDto(
+                trackId,
                 track.getTitle(),
                 new TrackArtistDto(mainArtist.getId(), mainArtist.getArtistName()),
                 featRepository.findArtistsNameAndIdByTrackId(track.getId()),
