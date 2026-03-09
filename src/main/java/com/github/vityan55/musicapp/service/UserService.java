@@ -14,7 +14,6 @@ import com.github.vityan55.musicapp.web.user.dto.UserWithTypeDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,12 +28,11 @@ public class UserService {
     private final ArtistRepository artistRepository;
     private final JwtService jwtService;
 
-    public UserWithTypeDto getUser(Authentication authentication) {
-        User userRequest = (User) authentication.getPrincipal();
-        log.info("Getting current user with id: {}", userRequest.getId());
+    public UserWithTypeDto getUser(Long userId) {
+        log.info("Getting current user with id: {}", userId);
 
-        User user = userRepository.findById(userRequest.getId()).orElseThrow(() -> {
-            log.warn("Get user failed. User not found with id: {}", userRequest.getId());
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            log.warn("Get user failed. User not found with id: {}", userId);
             return new MusicAppException("User not found", HttpStatus.NOT_FOUND);
         });
 
@@ -44,11 +42,10 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser (Authentication authentication) {
-        User userRequest = (User) authentication.getPrincipal();
+    public void deleteUser (Long userId) {
 
-        User user = userRepository.findById(userRequest.getId()).orElseThrow(() -> {
-            log.warn("Delete failed. User already deleted. Id: {}", userRequest.getId());
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            log.warn("Delete failed. User already deleted. Id: {}", userId);
             return new MusicAppException("User already deleted", HttpStatus.NOT_FOUND);
         });
 
@@ -60,12 +57,11 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto updatePersonal(Authentication authentication, UpdatePersonalRequest request) {
-        User userRequest = (User) authentication.getPrincipal();
-        log.info("Update personal data of user with id: {}", userRequest.getId());
+    public UserDto updatePersonal(Long userId, UpdatePersonalRequest request) {
+        log.info("Update personal data of user with id: {}", userId);
 
-        User user = userRepository.findById(userRequest.getId()).orElseThrow(() -> {
-            log.warn("Update failed. User not found with id: {}", userRequest.getId());
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            log.warn("Update failed. User not found with id: {}", userId);
             return new MusicAppException("User not found", HttpStatus.NOT_FOUND);
         });
 
@@ -76,12 +72,11 @@ public class UserService {
     }
 
     @Transactional
-    public LoginResult updatePassword(Authentication authentication, UpdatePasswordRequest request) {
-        User userRequest = (User) authentication.getPrincipal();
-        log.info("Update credentials of user with id: {}", userRequest.getId());
+    public LoginResult updatePassword(Long userId, UpdatePasswordRequest request) {
+        log.info("Update credentials of user with id: {}", userId);
 
-        User user = userRepository.findById(userRequest.getId()).orElseThrow(() -> {
-            log.warn("Update failed. User not found with Id: {}", userRequest.getId());
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            log.warn("Update failed. User not found with Id: {}", userId);
             return new MusicAppException("User not found", HttpStatus.NOT_FOUND);
         });
 

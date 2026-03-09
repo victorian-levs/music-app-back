@@ -44,13 +44,11 @@ public class TrackService {
     }
 
     @Transactional
-    public TrackDto create(CreateTrackRequest request, Authentication authentication) {
+    public TrackDto create(CreateTrackRequest request, Long userId) {
         log.info("Create new track");
 
-        User user = (User) authentication.getPrincipal();
-
-        Artist mainArtist = artistRepository.findByUserId(user.getId()).orElseThrow(() -> {
-            log.warn("Create track failed. Artist not found by ID: {}", user.getId());
+        Artist mainArtist = artistRepository.findByUserId(userId).orElseThrow(() -> {
+            log.warn("Create track failed. Artist not found by ID: {}", userId);
             return new MusicAppException("Artist not found", HttpStatus.NOT_FOUND);
         });
 
@@ -98,16 +96,14 @@ public class TrackService {
 
     @Transactional
     public TrackDto updateTrack(
-            Authentication authentication,
+            Long userId,
             UpdateTrackRequest request,
             Long trackId
     ) {
         log.info("Update track by track ID: {}", trackId);
 
-        User user = (User) authentication.getPrincipal();
-
-        Artist mainArtist = artistRepository.findByUserId(user.getId()).orElseThrow(() -> {
-            log.warn("Update track failed. Artist not found by ID: {}", user.getId());
+        Artist mainArtist = artistRepository.findByUserId(userId).orElseThrow(() -> {
+            log.warn("Update track failed. Artist not found by ID: {}", userId);
             return new MusicAppException("Artist not found", HttpStatus.NOT_FOUND);
         });
 
@@ -133,12 +129,11 @@ public class TrackService {
     }
 
     @Transactional
-    public void delete(Long trackId, Authentication authentication) {
+    public void delete(Long userId, Long trackId) {
         log.info("Delete track with ID: {}", trackId);
-        User userRequest = (User) authentication.getPrincipal();
 
-        Artist artist = artistRepository.findByUserId(userRequest.getId()).orElseThrow(() -> {
-            log.warn("Delete track failed. Artist not found by user id: {}", userRequest.getId());
+        Artist artist = artistRepository.findByUserId(userId).orElseThrow(() -> {
+            log.warn("Delete track failed. Artist not found by user id: {}", userId);
             return new MusicAppException("Artist not found", HttpStatus.NOT_FOUND);
         });
 
