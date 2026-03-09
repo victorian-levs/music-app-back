@@ -1,12 +1,15 @@
 package com.github.vityan55.musicapp.service;
 
 import com.github.vityan55.musicapp.entity.User;
+import com.github.vityan55.musicapp.entity.UserRole;
 import com.github.vityan55.musicapp.exception.MusicAppException;
 import com.github.vityan55.musicapp.repository.ArtistRepository;
 import com.github.vityan55.musicapp.repository.SubscriptionRepository;
 import com.github.vityan55.musicapp.repository.UserRepository;
 import com.github.vityan55.musicapp.security.JwtService;
 import com.github.vityan55.musicapp.web.auth.dto.LoginResult;
+import com.github.vityan55.musicapp.web.superadmin.dto.CreateAdminRequest;
+import com.github.vityan55.musicapp.web.superadmin.dto.UpdateRoleRequest;
 import com.github.vityan55.musicapp.web.user.dto.UpdatePasswordRequest;
 import com.github.vityan55.musicapp.web.user.dto.UpdatePersonalRequest;
 import com.github.vityan55.musicapp.web.user.dto.UserDto;
@@ -17,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
@@ -97,5 +102,35 @@ public class UserService {
         String refresh = jwtService.generateRefreshToken(user);
 
         return new LoginResult(access, refresh);
+    }
+
+    public UserDto updateRole(Long userId, UpdateRoleRequest request) {
+        log.info("Update role of user with id: {}", userId);
+
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            log.warn("Update role failed. User not found with id: {}", userId);
+            return new MusicAppException("User not found", HttpStatus.NOT_FOUND);
+        });
+
+        if (user.getUserRole() == UserRole.SUPER_ADMIN) {
+            throw new MusicAppException("Cannot modify super admin", HttpStatus.FORBIDDEN);
+        }
+
+        UserRole role;
+
+        try {
+            role = UserRole.valueOf(request.role().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new MusicAppException("Invalid role", HttpStatus.BAD_REQUEST);
+        }
+
+        if (role == UserRole.SUPER_ADMIN) {
+            throw new MusicAppException("Cannot assign SUPER_ADMIN role", HttpStatus.FORBIDDEN);
+        }
+
+        log.info("Saving user with new role and id: {}", user.getId());
+        user.setUserRole(role);
+
+        return new UserDto(user.getId(), user.getEmail(), user.getUsername());
     }
 }

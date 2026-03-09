@@ -58,6 +58,7 @@ public class ArtistController {
     private ResponseEntity<PageResponse<ArtistDto>> constructFromPage(Page<Artist> page) {
         var content = page.getContent().stream()
                 .map(artist -> new ArtistDto(
+                        artist.getId(),
                         artist.getUser().getId(),
                         artist.getArtistName(),
                         artist.getDescription())
