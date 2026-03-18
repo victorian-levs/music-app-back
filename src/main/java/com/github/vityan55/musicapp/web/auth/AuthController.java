@@ -68,11 +68,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(Authentication authentication) {
-        if (authentication == null || authentication.getPrincipal() == null){
-            throw new MusicAppException("Unauthorized", HttpStatus.UNAUTHORIZED);
-        }
-
+    public ResponseEntity<Void> logout() {
         ResponseCookie deleteCookie = ResponseCookie.from("refresh_token", "")
                 .httpOnly(true)
                 .secure(false)

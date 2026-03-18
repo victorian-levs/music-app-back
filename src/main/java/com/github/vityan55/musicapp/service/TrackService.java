@@ -4,9 +4,9 @@ package com.github.vityan55.musicapp.service;
 import com.github.vityan55.musicapp.entity.Artist;
 import com.github.vityan55.musicapp.entity.Feat;
 import com.github.vityan55.musicapp.entity.Track;
-import com.github.vityan55.musicapp.entity.User;
 import com.github.vityan55.musicapp.exception.MusicAppException;
 import com.github.vityan55.musicapp.repository.ArtistRepository;
+import com.github.vityan55.musicapp.repository.FavoritesRepository;
 import com.github.vityan55.musicapp.repository.FeatRepository;
 import com.github.vityan55.musicapp.repository.TrackRepository;
 import com.github.vityan55.musicapp.repository.specification.TrackFilter;
@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +31,7 @@ public class TrackService {
     private final TrackRepository trackRepository;
     private final ArtistRepository artistRepository;
     private final FeatRepository featRepository;
+    private final FavoritesRepository favoritesRepository;
 
     public Page<Track> findAll(Pageable pageable) {
         log.info("Find all tracks by pageable");
@@ -89,7 +89,7 @@ public class TrackService {
                 newTrack.getId(),
                 newTrack.getTitle(),
                 new TrackArtistDto(mainArtist.getId(), mainArtist.getArtistName()),
-                featRepository.findArtistsNameAndIdByTrackId(track.getId()),
+                featRepository.findArtistsNameAndIdByTrackId(newTrack.getId()),
                 newTrack.getDurationMs(),
                 newTrack.getReleaseDate()
         );
@@ -149,7 +149,6 @@ public class TrackService {
             throw new MusicAppException("Track not found", HttpStatus.NOT_FOUND);
         }
 
-        featRepository.deleteAllByTrackId(trackId);
         trackRepository.deleteById(trackId);
     }
 }

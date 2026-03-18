@@ -48,16 +48,12 @@ public class UserService {
 
     @Transactional
     public void deleteUser (Long userId) {
-
         User user = userRepository.findById(userId).orElseThrow(() -> {
             log.warn("Delete failed. User already deleted. Id: {}", userId);
             return new MusicAppException("User already deleted", HttpStatus.NOT_FOUND);
         });
 
         log.info("Delete user by id: {}", user.getId());
-        int countOfDelete = subscriptionRepository.deleteAllBySubscriberId(user.getId());
-
-        log.info("Delete subscriptions. Count: {}", countOfDelete);
         userRepository.deleteById(user.getId());
     }
 
@@ -104,6 +100,7 @@ public class UserService {
         return new LoginResult(access, refresh);
     }
 
+    @Transactional
     public UserDto updateRole(Long userId, UpdateRoleRequest request) {
         log.info("Update role of user with id: {}", userId);
 

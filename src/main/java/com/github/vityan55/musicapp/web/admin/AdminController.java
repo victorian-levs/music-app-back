@@ -19,7 +19,7 @@ public class AdminController {
 
     private final ArtistService artistService;
 
-    @PostMapping
+    @PostMapping("/artists")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ArtistDto> createArtist(@Valid @RequestBody CreateArtistRequest request) {
         return ResponseEntity.ok(artistService.create(request));
