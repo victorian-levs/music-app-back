@@ -29,6 +29,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
+    implementation("io.minio:minio:8.5.7")
 
     // JWT
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
