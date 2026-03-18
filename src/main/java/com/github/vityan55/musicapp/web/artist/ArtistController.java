@@ -28,7 +28,7 @@ public class ArtistController {
         return constructFromPage(artistService.findAll(PageRequest.of(pageNumber, pageSize)));
     }
 
-    @GetMapping
+    @GetMapping("/filter")
     public ResponseEntity<PageResponse<ArtistDto>> filterArtists(ArtistFilter filter) {
         return constructFromPage(artistService.filter(
                 filter,
@@ -37,7 +37,7 @@ public class ArtistController {
     }
 
     @GetMapping("/{artistId}")
-    public ResponseEntity<ArtistDto> getArtistById(@RequestBody Long artistId) {
+    public ResponseEntity<ArtistDto> getArtistById(@PathVariable Long artistId) {
         return ResponseEntity.ok(artistService.findById(artistId));
     }
 

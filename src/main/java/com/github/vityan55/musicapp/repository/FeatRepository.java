@@ -15,7 +15,4 @@ public interface FeatRepository extends JpaRepository<Feat, Long> {
             "FROM Feat f " +
             "WHERE f.track.id = :trackId")
     List<TrackArtistDto> findArtistsNameAndIdByTrackId(@Param("trackId") Long trackId);
-
-    void deleteAllByTrackId(Long trackId);
-    void deleteAllByArtistId(Long artistId);
 }

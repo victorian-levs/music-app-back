@@ -2,6 +2,8 @@ package com.github.vityan55.musicapp.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "subscriptions",
@@ -26,9 +28,11 @@ public class Subscription {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "artist_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Artist artist;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscriber_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User subscriber;
 }

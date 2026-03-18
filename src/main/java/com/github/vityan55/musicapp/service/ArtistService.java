@@ -72,7 +72,7 @@ public class ArtistService {
         Artist newArtist = artistRepository.save(artist);
 
         return new ArtistDto(
-                artist.getId(),
+                newArtist.getId(),
                 newArtist.getUser().getId(),
                 newArtist.getArtistName(),
                 newArtist.getDescription()
@@ -131,7 +131,6 @@ public class ArtistService {
             );
         }
 
-        featRepository.deleteAllByArtistId(artistId);
         artistRepository.deleteById(artistId);
     }
 }
