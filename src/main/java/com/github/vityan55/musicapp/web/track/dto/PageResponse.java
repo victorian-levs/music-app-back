@@ -1,4 +1,4 @@
-package com.github.vityan55.musicapp.web.dto;
+package com.github.vityan55.musicapp.web.track.dto;
 
 import java.util.List;
 

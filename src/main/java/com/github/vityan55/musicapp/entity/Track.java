@@ -29,7 +29,7 @@ public class Track {
     private String title;
 
     @Column(nullable = false)
-    private String fileUrl;
+    private String fileKey;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "main_artist_id", nullable = false)

@@ -12,6 +12,7 @@ import com.github.vityan55.musicapp.repository.TrackRepository;
 import com.github.vityan55.musicapp.repository.specification.TrackFilter;
 import com.github.vityan55.musicapp.repository.specification.TrackSpecification;
 import com.github.vityan55.musicapp.web.track.dto.*;
+import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,8 @@ public class TrackService {
     private final ArtistRepository artistRepository;
     private final FeatRepository featRepository;
     private final FavoritesRepository favoritesRepository;
+    private final MinioClient minioClient;
+    private final StorageService storageService;
 
     public Page<Track> findAll(Pageable pageable) {
         log.info("Find all tracks by pageable");
@@ -52,9 +55,11 @@ public class TrackService {
             return new MusicAppException("Artist not found", HttpStatus.NOT_FOUND);
         });
 
+        TrackFileMetaData metaData = storageService.validateFile(request.fileKey());
+
         Track track = Track.builder()
                 .title(request.title())
-                .fileUrl(request.fileUrl())
+                .fileKey(request.fileKey())
                 .durationMs(request.durationMs())
                 .releaseDate(request.releaseDate())
                 .mainArtist(mainArtist)
