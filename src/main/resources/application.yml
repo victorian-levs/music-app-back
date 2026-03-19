@@ -15,3 +15,6 @@ jwt:
   secret: "RANDOM_LONG_SECRET_KEY_THAT_IS_AT_LEAST_32_CHARS"
   access-token-expiration: 9000000
   refresh-token-expiration: 604800000
+
+server:
+  port: 9090

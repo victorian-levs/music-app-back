@@ -6,7 +6,7 @@ import com.github.vityan55.musicapp.repository.specification.ArtistFilter;
 import com.github.vityan55.musicapp.service.ArtistService;
 import com.github.vityan55.musicapp.web.artist.dto.ArtistDto;
 import com.github.vityan55.musicapp.web.artist.dto.UpdateArtistRequest;
-import com.github.vityan55.musicapp.web.dto.PageResponse;
+import com.github.vityan55.musicapp.web.track.dto.PageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

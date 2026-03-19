@@ -3,8 +3,9 @@ package com.github.vityan55.musicapp.web.track;
 import com.github.vityan55.musicapp.entity.Track;
 import com.github.vityan55.musicapp.entity.User;
 import com.github.vityan55.musicapp.repository.specification.TrackFilter;
+import com.github.vityan55.musicapp.service.StorageService;
 import com.github.vityan55.musicapp.service.TrackService;
-import com.github.vityan55.musicapp.web.dto.PageResponse;
+import com.github.vityan55.musicapp.web.track.dto.PageResponse;
 import com.github.vityan55.musicapp.web.track.dto.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +16,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("tracks")
 @RequiredArgsConstructor
 public class TrackController {
 
     private final TrackService trackService;
+    private final StorageService storageService;
 
     @GetMapping
     public ResponseEntity<PageResponse<TrackDto>> getAllTracks(@RequestParam Integer pageSize,
@@ -36,6 +40,13 @@ public class TrackController {
         ));
     }
 
+    @GetMapping("/{trackId}/stream")
+    public ResponseEntity<TrackStreamDto> getStream(@PathVariable Long trackId) {
+        String url = storageService.generateDownloadUrl(trackId);
+
+        return ResponseEntity.ok(new TrackStreamDto(url));
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<TrackDto>createTrack(@AuthenticationPrincipal User user,
@@ -44,7 +55,19 @@ public class TrackController {
         return ResponseEntity.ok(trackService.create(request, user.getId()));
     }
 
+    @PostMapping("/upload-url")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<UploadTrackUrlResponse> getUploadUrl(@AuthenticationPrincipal User user,
+                                                               CreateTrackUploadUrlRequest request) {
+        String key = "tracks/" + UUID.randomUUID() + ".mp3";
+
+        String url = storageService.generateUploadURL(key, user.getId(), request);
+
+        return ResponseEntity.ok(new UploadTrackUrlResponse(key, url));
+    }
+
     @PatchMapping("/{trackId}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<TrackDto> updateTrack(@AuthenticationPrincipal User user,
                                                 @Valid @RequestBody UpdateTrackRequest request,
                                                 @PathVariable Long trackId) {
@@ -52,8 +75,8 @@ public class TrackController {
     }
 
     @DeleteMapping("/{trackId}")
-    public ResponseEntity<Void> deleteArtist(@AuthenticationPrincipal User user,
-                                             @PathVariable Long trackId) {
+    public ResponseEntity<Void> deleteTrack(@AuthenticationPrincipal User user,
+                                            @PathVariable Long trackId) {
         trackService.delete(user.getId(), trackId);
         return ResponseEntity.noContent().build();
     }
