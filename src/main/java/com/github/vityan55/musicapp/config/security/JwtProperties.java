@@ -1,4 +1,4 @@
-package com.github.vityan55.musicapp.config;
+package com.github.vityan55.musicapp.config.security;
 
 import lombok.Getter;
 import lombok.Setter;

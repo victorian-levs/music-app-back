@@ -1,6 +1,6 @@
 package com.github.vityan55.musicapp.security;
 
-import com.github.vityan55.musicapp.config.JwtProperties;
+import com.github.vityan55.musicapp.config.security.JwtProperties;
 import com.github.vityan55.musicapp.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
