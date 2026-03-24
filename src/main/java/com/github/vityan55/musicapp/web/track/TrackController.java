@@ -3,8 +3,9 @@ package com.github.vityan55.musicapp.web.track;
 import com.github.vityan55.musicapp.entity.Track;
 import com.github.vityan55.musicapp.entity.User;
 import com.github.vityan55.musicapp.repository.specification.TrackFilter;
-import com.github.vityan55.musicapp.service.StorageService;
+import com.github.vityan55.musicapp.service.MinioStorageService;
 import com.github.vityan55.musicapp.service.TrackService;
+import com.github.vityan55.musicapp.service.TrackStorageService;
 import com.github.vityan55.musicapp.web.track.dto.PageResponse;
 import com.github.vityan55.musicapp.web.track.dto.*;
 import jakarta.validation.Valid;
@@ -24,7 +25,7 @@ import java.util.UUID;
 public class TrackController {
 
     private final TrackService trackService;
-    private final StorageService storageService;
+    private final TrackStorageService trackStorageService;
 
     @GetMapping
     public ResponseEntity<PageResponse<TrackDto>> getAllTracks(@RequestParam Integer pageSize,
@@ -42,7 +43,7 @@ public class TrackController {
 
     @GetMapping("/{trackId}/stream")
     public ResponseEntity<TrackStreamDto> getStream(@PathVariable Long trackId) {
-        String url = storageService.generateDownloadUrl(trackId);
+        String url = trackStorageService.generateDownloadUrl(trackId);
 
         return ResponseEntity.ok(new TrackStreamDto(url));
     }
@@ -61,7 +62,7 @@ public class TrackController {
                                                                CreateTrackUploadUrlRequest request) {
         String key = "tracks/" + UUID.randomUUID() + ".mp3";
 
-        String url = storageService.generateUploadURL(key, user.getId(), request);
+        String url = trackStorageService.generateUploadURL(key, user.getId(), request);
 
         return ResponseEntity.ok(new UploadTrackUrlResponse(key, url));
     }

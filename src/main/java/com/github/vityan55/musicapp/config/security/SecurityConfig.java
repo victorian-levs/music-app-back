@@ -1,4 +1,4 @@
-package com.github.vityan55.musicapp.config;
+package com.github.vityan55.musicapp.config.security;
 
 import com.github.vityan55.musicapp.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;

@@ -6,13 +6,11 @@ import com.github.vityan55.musicapp.entity.Feat;
 import com.github.vityan55.musicapp.entity.Track;
 import com.github.vityan55.musicapp.exception.MusicAppException;
 import com.github.vityan55.musicapp.repository.ArtistRepository;
-import com.github.vityan55.musicapp.repository.FavoritesRepository;
 import com.github.vityan55.musicapp.repository.FeatRepository;
 import com.github.vityan55.musicapp.repository.TrackRepository;
 import com.github.vityan55.musicapp.repository.specification.TrackFilter;
 import com.github.vityan55.musicapp.repository.specification.TrackSpecification;
 import com.github.vityan55.musicapp.web.track.dto.*;
-import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,9 +30,7 @@ public class TrackService {
     private final TrackRepository trackRepository;
     private final ArtistRepository artistRepository;
     private final FeatRepository featRepository;
-    private final FavoritesRepository favoritesRepository;
-    private final MinioClient minioClient;
-    private final StorageService storageService;
+    private final TrackStorageService trackStorageService;
 
     public Page<Track> findAll(Pageable pageable) {
         log.info("Find all tracks by pageable");
@@ -55,7 +51,7 @@ public class TrackService {
             return new MusicAppException("Artist not found", HttpStatus.NOT_FOUND);
         });
 
-        TrackFileMetaData metaData = storageService.validateFile(request.fileKey());
+        TrackFileMetaData metaData = trackStorageService.validateFile(request.fileKey());
 
         Track track = Track.builder()
                 .title(request.title())

@@ -18,3 +18,9 @@ jwt:
 
 server:
   port: 9090
+
+app:
+  storage:
+    buckets:
+      TRACKS: tracks
+      AVATARS: avatars
