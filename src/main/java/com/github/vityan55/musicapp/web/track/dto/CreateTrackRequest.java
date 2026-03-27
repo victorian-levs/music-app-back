@@ -9,7 +9,6 @@ import java.util.List;
 public record CreateTrackRequest(
         @NotNull @NotBlank String title,
         @NotNull @NotBlank String fileKey,
-        @NotNull Long durationMs,
         @NotNull LocalDate releaseDate,
         List<Long> featArtistIds
 ) {

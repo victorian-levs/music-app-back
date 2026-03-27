@@ -1,6 +1,6 @@
 package com.github.vityan55.musicapp.web.admin;
 
-import com.github.vityan55.musicapp.service.ArtistService;
+import com.github.vityan55.musicapp.service.artist.ArtistService;
 import com.github.vityan55.musicapp.web.artist.dto.ArtistDto;
 import com.github.vityan55.musicapp.web.artist.dto.CreateArtistRequest;
 import jakarta.validation.Valid;

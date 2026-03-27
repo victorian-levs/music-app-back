@@ -1,12 +1,11 @@
 package com.github.vityan55.musicapp.web.likes;
 
 import com.github.vityan55.musicapp.entity.User;
-import com.github.vityan55.musicapp.service.FavoritesService;
-import com.github.vityan55.musicapp.service.SubscriptionService;
+import com.github.vityan55.musicapp.service.favorites.FavoritesService;
+import com.github.vityan55.musicapp.service.subscription.SubscriptionService;
 import com.github.vityan55.musicapp.web.artist.dto.ArtistDto;
 import com.github.vityan55.musicapp.web.track.dto.FavoriteTracksDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.data.metrics.DefaultRepositoryTagsProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

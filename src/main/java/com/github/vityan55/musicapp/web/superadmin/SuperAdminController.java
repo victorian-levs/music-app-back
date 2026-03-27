@@ -1,6 +1,6 @@
 package com.github.vityan55.musicapp.web.superadmin;
 
-import com.github.vityan55.musicapp.service.UserService;
+import com.github.vityan55.musicapp.service.user.UserService;
 import com.github.vityan55.musicapp.web.superadmin.dto.UpdateRoleRequest;
 import com.github.vityan55.musicapp.web.user.dto.UserDto;
 import jakarta.validation.Valid;

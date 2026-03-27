@@ -1,9 +1,8 @@
-package com.github.vityan55.musicapp.service;
+package com.github.vityan55.musicapp.service.storage;
 
 import com.github.vityan55.musicapp.config.storage.BucketType;
 import com.github.vityan55.musicapp.config.storage.StorageProperties;
 import com.github.vityan55.musicapp.exception.MusicAppException;
-import com.github.vityan55.musicapp.repository.ArtistRepository;
 import com.github.vityan55.musicapp.repository.TrackRepository;
 import io.minio.*;
 import io.minio.errors.*;
@@ -15,9 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.io.InputStream;
 import java.time.Instant;
 import java.time.chrono.ChronoZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -91,6 +88,21 @@ public class MinioStorageService {
             throw new MusicAppException("Storage error", HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             log.warn("Error while checking file {} in storage", objectKey);
+            throw new MusicAppException("Storage error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public InputStream getObject(String objectKey, BucketType type) {
+        log.info("Getting object with objectKey {}", objectKey);
+        try {
+            return minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket(storageProperties.getBucket(type))
+                            .object(objectKey)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.warn("Error while getting object {}", objectKey);
             throw new MusicAppException("Storage error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

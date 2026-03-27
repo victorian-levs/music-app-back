@@ -1,6 +1,5 @@
-package com.github.vityan55.musicapp.service;
+package com.github.vityan55.musicapp.service.favorites;
 
-import com.github.vityan55.musicapp.entity.Artist;
 import com.github.vityan55.musicapp.entity.Favorites;
 import com.github.vityan55.musicapp.entity.Track;
 import com.github.vityan55.musicapp.entity.User;

@@ -1,4 +1,4 @@
-package com.github.vityan55.musicapp.service;
+package com.github.vityan55.musicapp.service.storage;
 
 import com.github.vityan55.musicapp.config.storage.BucketType;
 import com.github.vityan55.musicapp.entity.Track;
@@ -6,7 +6,6 @@ import com.github.vityan55.musicapp.exception.MusicAppException;
 import com.github.vityan55.musicapp.repository.ArtistRepository;
 import com.github.vityan55.musicapp.repository.TrackRepository;
 import com.github.vityan55.musicapp.web.track.dto.CreateTrackUploadUrlRequest;
-import com.github.vityan55.musicapp.web.track.dto.TrackFileMetaData;
 import io.minio.StatObjectResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +54,7 @@ public class TrackStorageService {
         return minioStorageService.generateDownloadUrl(track.getFileKey(), BucketType.TRACKS);
     }
 
-    public TrackFileMetaData validateFile(String objectKey) {
+    public void validateFile(String objectKey) {
         log.info("Validating file with key {}", objectKey);
 
         StatObjectResponse response = minioStorageService.getResponse(objectKey);
@@ -74,11 +73,9 @@ public class TrackStorageService {
             log.warn("Error. File with key {} too large", objectKey);
             throw new MusicAppException("File too large", HttpStatus.BAD_REQUEST);
         }
-
-        return new TrackFileMetaData(response.size(), response.contentType());
     }
 
-    public void validateExtension(String fileName) {
+    private void validateExtension(String fileName) {
         log.info("Validating extension for file {}", fileName);
 
         if (!fileName.contains(".")) {

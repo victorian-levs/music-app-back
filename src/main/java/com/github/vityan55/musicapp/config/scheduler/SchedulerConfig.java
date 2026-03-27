@@ -5,6 +5,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @EnableScheduling
+// класс для фоновых задач
 public class SchedulerConfig {
-    // класс для фоновых задач
 }

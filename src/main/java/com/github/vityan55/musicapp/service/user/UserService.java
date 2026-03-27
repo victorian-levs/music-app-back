@@ -1,4 +1,4 @@
-package com.github.vityan55.musicapp.service;
+package com.github.vityan55.musicapp.service.user;
 
 import com.github.vityan55.musicapp.entity.User;
 import com.github.vityan55.musicapp.entity.UserRole;
@@ -8,7 +8,6 @@ import com.github.vityan55.musicapp.repository.SubscriptionRepository;
 import com.github.vityan55.musicapp.repository.UserRepository;
 import com.github.vityan55.musicapp.security.JwtService;
 import com.github.vityan55.musicapp.web.auth.dto.LoginResult;
-import com.github.vityan55.musicapp.web.superadmin.dto.CreateAdminRequest;
 import com.github.vityan55.musicapp.web.superadmin.dto.UpdateRoleRequest;
 import com.github.vityan55.musicapp.web.user.dto.UpdatePasswordRequest;
 import com.github.vityan55.musicapp.web.user.dto.UpdatePersonalRequest;
@@ -20,8 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
