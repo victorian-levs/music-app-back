@@ -8,6 +8,6 @@ public record TrackDto(
         String title,
         TrackArtistDto mainArtist,
         List<TrackArtistDto> featArtists,
-        Long durationMs,
+        int durationMs,
         LocalDate releaseDate
 ) {}

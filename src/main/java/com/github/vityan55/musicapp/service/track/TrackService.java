@@ -1,4 +1,4 @@
-package com.github.vityan55.musicapp.service;
+package com.github.vityan55.musicapp.service.track;
 
 
 import com.github.vityan55.musicapp.entity.Artist;
@@ -10,6 +10,9 @@ import com.github.vityan55.musicapp.repository.FeatRepository;
 import com.github.vityan55.musicapp.repository.TrackRepository;
 import com.github.vityan55.musicapp.repository.specification.TrackFilter;
 import com.github.vityan55.musicapp.repository.specification.TrackSpecification;
+import com.github.vityan55.musicapp.service.data.AudioMetadataService;
+import com.github.vityan55.musicapp.service.storage.MinioStorageService;
+import com.github.vityan55.musicapp.service.storage.TrackStorageService;
 import com.github.vityan55.musicapp.web.track.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +34,7 @@ public class TrackService {
     private final ArtistRepository artistRepository;
     private final FeatRepository featRepository;
     private final TrackStorageService trackStorageService;
+    private final AudioMetadataService audioMetadataService;
 
     public Page<Track> findAll(Pageable pageable) {
         log.info("Find all tracks by pageable");
@@ -51,14 +55,15 @@ public class TrackService {
             return new MusicAppException("Artist not found", HttpStatus.NOT_FOUND);
         });
 
-        TrackFileMetaData metaData = trackStorageService.validateFile(request.fileKey());
+        trackStorageService.validateFile(request.fileKey());
+        int duration = audioMetadataService.getDuration(request.fileKey());
 
         Track track = Track.builder()
                 .title(request.title())
                 .fileKey(request.fileKey())
-                .durationMs(request.durationMs())
                 .releaseDate(request.releaseDate())
                 .mainArtist(mainArtist)
+                .durationMs(duration)
                 .build();
 
         Track newTrack = trackRepository.save(track);

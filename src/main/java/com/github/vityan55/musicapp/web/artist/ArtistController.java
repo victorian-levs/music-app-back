@@ -3,7 +3,7 @@ package com.github.vityan55.musicapp.web.artist;
 import com.github.vityan55.musicapp.entity.Artist;
 import com.github.vityan55.musicapp.entity.User;
 import com.github.vityan55.musicapp.repository.specification.ArtistFilter;
-import com.github.vityan55.musicapp.service.ArtistService;
+import com.github.vityan55.musicapp.service.artist.ArtistService;
 import com.github.vityan55.musicapp.web.artist.dto.ArtistDto;
 import com.github.vityan55.musicapp.web.artist.dto.UpdateArtistRequest;
 import com.github.vityan55.musicapp.web.track.dto.PageResponse;

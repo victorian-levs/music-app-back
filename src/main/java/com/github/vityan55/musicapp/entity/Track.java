@@ -36,7 +36,7 @@ public class Track {
     private Artist mainArtist;
 
     @Column(nullable = false)
-    private Long durationMs;
+    private int durationMs;
 
     @Column(nullable = false)
     private LocalDate releaseDate;

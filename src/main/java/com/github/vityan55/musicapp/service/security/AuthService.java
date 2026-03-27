@@ -1,4 +1,4 @@
-package com.github.vityan55.musicapp.service;
+package com.github.vityan55.musicapp.service.security;
 
 import com.github.vityan55.musicapp.web.auth.dto.LoginRequest;
 import com.github.vityan55.musicapp.web.auth.dto.LoginResult;

@@ -1,7 +1,7 @@
 package com.github.vityan55.musicapp.web.user;
 
 import com.github.vityan55.musicapp.entity.User;
-import com.github.vityan55.musicapp.service.UserService;
+import com.github.vityan55.musicapp.service.user.UserService;
 import com.github.vityan55.musicapp.web.auth.dto.AuthResponse;
 import com.github.vityan55.musicapp.web.auth.dto.LoginResult;
 import com.github.vityan55.musicapp.web.user.dto.UpdatePasswordRequest;
