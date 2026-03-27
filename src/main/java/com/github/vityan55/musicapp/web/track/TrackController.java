@@ -5,6 +5,7 @@ import com.github.vityan55.musicapp.entity.User;
 import com.github.vityan55.musicapp.repository.specification.TrackFilter;
 import com.github.vityan55.musicapp.service.track.TrackService;
 import com.github.vityan55.musicapp.service.storage.TrackStorageService;
+import com.github.vityan55.musicapp.service.validation.FileValidationUtils;
 import com.github.vityan55.musicapp.web.track.dto.PageResponse;
 import com.github.vityan55.musicapp.web.track.dto.*;
 import jakarta.validation.Valid;
@@ -59,7 +60,8 @@ public class TrackController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UploadTrackUrlResponse> getUploadUrl(@AuthenticationPrincipal User user,
                                                                CreateTrackUploadUrlRequest request) {
-        String key = "tracks/" + UUID.randomUUID() + ".mp3";
+        String key = "tracks/" + user.getId() + "/" + UUID.randomUUID() + "." +
+                FileValidationUtils.getExtension(request.filename());
 
         String url = trackStorageService.generateUploadURL(key, user.getId(), request);
 

@@ -1,12 +1,13 @@
 package com.github.vityan55.musicapp.service.user;
 
+import com.github.vityan55.musicapp.config.storage.BucketType;
 import com.github.vityan55.musicapp.entity.User;
 import com.github.vityan55.musicapp.entity.UserRole;
 import com.github.vityan55.musicapp.exception.MusicAppException;
 import com.github.vityan55.musicapp.repository.ArtistRepository;
-import com.github.vityan55.musicapp.repository.SubscriptionRepository;
 import com.github.vityan55.musicapp.repository.UserRepository;
 import com.github.vityan55.musicapp.security.JwtService;
+import com.github.vityan55.musicapp.service.storage.AvatarStorageService;
 import com.github.vityan55.musicapp.web.auth.dto.LoginResult;
 import com.github.vityan55.musicapp.web.superadmin.dto.UpdateRoleRequest;
 import com.github.vityan55.musicapp.web.user.dto.UpdatePasswordRequest;
@@ -25,10 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class UserService {
     private final UserRepository userRepository;
-    private final SubscriptionRepository subscriptionRepository;
     private final PasswordEncoder passwordEncoder;
     private final ArtistRepository artistRepository;
     private final JwtService jwtService;
+    private final AvatarStorageService avatarStorageService;
 
     public UserWithTypeDto getUser(Long userId) {
         log.info("Getting current user with id: {}", userId);
@@ -67,6 +68,27 @@ public class UserService {
         user.setUsername(request.username());
 
         return new UserDto(user.getId(), user.getEmail(), user.getUsername());
+    }
+
+    @Transactional
+    public String confirmAvatar(Long userId, String objectKey) {
+        avatarStorageService.generateDownloadUrl(objectKey);
+
+        User user = userRepository.findById(userId).orElseThrow(() -> {
+            log.warn("User with id {} not found", userId);
+            return new MusicAppException("User not found", HttpStatus.NOT_FOUND);
+        });
+
+        String oldAvatar = user.getAvatarKey();
+
+        user.setAvatarKey(objectKey);
+        userRepository.save(user);
+
+        if (oldAvatar != null) {
+            avatarStorageService.delete(oldAvatar, BucketType.AVATARS);
+        }
+
+        return avatarStorageService.generateDownloadUrl(objectKey);
     }
 
     @Transactional

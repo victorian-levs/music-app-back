@@ -1,13 +1,12 @@
 package com.github.vityan55.musicapp.web.user;
 
 import com.github.vityan55.musicapp.entity.User;
+import com.github.vityan55.musicapp.service.storage.AvatarStorageService;
 import com.github.vityan55.musicapp.service.user.UserService;
+import com.github.vityan55.musicapp.service.validation.FileValidationUtils;
 import com.github.vityan55.musicapp.web.auth.dto.AuthResponse;
 import com.github.vityan55.musicapp.web.auth.dto.LoginResult;
-import com.github.vityan55.musicapp.web.user.dto.UpdatePasswordRequest;
-import com.github.vityan55.musicapp.web.user.dto.UpdatePersonalRequest;
-import com.github.vityan55.musicapp.web.user.dto.UserDto;
-import com.github.vityan55.musicapp.web.user.dto.UserWithTypeDto;
+import com.github.vityan55.musicapp.web.user.dto.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -16,16 +15,37 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/profile")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final AvatarStorageService avatarStorageService;
 
     @GetMapping
     public ResponseEntity<UserWithTypeDto> getProfile(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(userService.getUser(user.getId()));
+    }
+
+    @PostMapping("/upload-url")
+    public ResponseEntity<UploadAvatarUrlResponse> getUploadUrl(@AuthenticationPrincipal User user,
+                                                                     CreateAvatarUploadUrlRequest request){
+        String key = "avatars/" + user.getId() + "/" + UUID.randomUUID() + "." + FileValidationUtils.getExtension(request.filename());
+
+        String url = avatarStorageService.generateUploadURL(key, user.getId(), request);
+
+        return ResponseEntity.ok(new UploadAvatarUrlResponse(key, url));
+    }
+
+    @PostMapping("/confirm")
+    public ResponseEntity<AvatarConfirmDto> getStream(@AuthenticationPrincipal User user,
+                                                      ConfirmAvatarRequest request) {
+        String url = userService.confirmAvatar(user.getId(), request.objectKey());
+
+        return ResponseEntity.ok(new AvatarConfirmDto(url));
     }
 
     @DeleteMapping
