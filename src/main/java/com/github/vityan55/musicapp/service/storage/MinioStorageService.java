@@ -4,6 +4,7 @@ import com.github.vityan55.musicapp.config.storage.BucketType;
 import com.github.vityan55.musicapp.config.storage.StorageProperties;
 import com.github.vityan55.musicapp.exception.MusicAppException;
 import com.github.vityan55.musicapp.repository.TrackRepository;
+import com.github.vityan55.musicapp.repository.UserRepository;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.http.Method;
@@ -29,6 +30,7 @@ public class MinioStorageService {
     private final StorageProperties storageProperties;
     private final MinioClient minioClient;
     private final TrackRepository trackRepository;
+    private final UserRepository userRepository;
 
     public String generateUploadURL(String objectKey, BucketType type) {
         log.info("Generating upload url for object with key {}", objectKey);
@@ -69,6 +71,7 @@ public class MinioStorageService {
     @Scheduled(cron = "0 0 * * * *")
     public void cleanup(){
         cleanupBucket(BucketType.TRACKS, new HashSet<>(trackRepository.findAllFileKeys()));
+        cleanupBucket(BucketType.AVATARS, new HashSet<>(userRepository.findAllFileKeys()));
     }
 
     public StatObjectResponse getResponse(String objectKey) {
@@ -104,6 +107,20 @@ public class MinioStorageService {
         } catch (Exception e) {
             log.warn("Error while getting object {}", objectKey);
             throw new MusicAppException("Storage error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public void delete(String objectKey, BucketType type) {
+        try {
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket(storageProperties.getBucket(type))
+                            .object(objectKey)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.warn("Error while delete file with key {}", objectKey);
+            throw new MusicAppException("Error while delete file", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
