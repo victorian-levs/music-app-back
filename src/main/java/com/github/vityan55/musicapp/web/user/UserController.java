@@ -30,9 +30,9 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(user.getId()));
     }
 
-    @PostMapping("/upload-url")
+    @PostMapping("/avatar/upload-url")
     public ResponseEntity<UploadAvatarUrlResponse> getUploadUrl(@AuthenticationPrincipal User user,
-                                                                     CreateAvatarUploadUrlRequest request){
+                                                                @RequestBody CreateAvatarUploadUrlRequest request){
         String key = "avatars/" + user.getId() + "/" + UUID.randomUUID() + "." + FileValidationUtils.getExtension(request.filename());
 
         String url = avatarStorageService.generateUploadURL(key, user.getId(), request);
@@ -40,9 +40,9 @@ public class UserController {
         return ResponseEntity.ok(new UploadAvatarUrlResponse(key, url));
     }
 
-    @PostMapping("/confirm")
-    public ResponseEntity<AvatarConfirmDto> getStream(@AuthenticationPrincipal User user,
-                                                      ConfirmAvatarRequest request) {
+    @PostMapping("/avatar/confirm")
+    public ResponseEntity<AvatarConfirmDto> confirm(@AuthenticationPrincipal User user,
+                                                    @RequestBody ConfirmAvatarRequest request) {
         String url = userService.confirmAvatar(user.getId(), request.objectKey());
 
         return ResponseEntity.ok(new AvatarConfirmDto(url));

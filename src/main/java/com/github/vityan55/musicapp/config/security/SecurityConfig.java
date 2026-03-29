@@ -1,6 +1,7 @@
 package com.github.vityan55.musicapp.config.security;
 
 import com.github.vityan55.musicapp.security.JwtAuthFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain (HttpSecurity http) {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                )
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register").permitAll()

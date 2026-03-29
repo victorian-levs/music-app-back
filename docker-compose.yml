@@ -9,7 +9,7 @@ services:
       - "5432:5432"
 
   minio:
-    image: minio/minio
+    image: minio/minio:latest
     container_name: minio
     ports:
       - "9000:9000"
