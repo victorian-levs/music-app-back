@@ -5,11 +5,13 @@ import com.github.vityan55.musicapp.entity.UserRole;
 import com.github.vityan55.musicapp.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Profile("prod")
 public class SuperAdminSeeder {
 
     private final UserRepository userRepository;

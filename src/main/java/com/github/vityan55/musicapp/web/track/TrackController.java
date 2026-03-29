@@ -59,7 +59,7 @@ public class TrackController {
     @PostMapping("/upload-url")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UploadTrackUrlResponse> getUploadUrl(@AuthenticationPrincipal User user,
-                                                               CreateTrackUploadUrlRequest request) {
+                                                               @RequestBody CreateTrackUploadUrlRequest request) {
         String key = "tracks/" + user.getId() + "/" + UUID.randomUUID() + "." +
                 FileValidationUtils.getExtension(request.filename());
 

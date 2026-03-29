@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,7 +61,7 @@ public class TrackService {
         Track track = Track.builder()
                 .title(request.title())
                 .fileKey(request.fileKey())
-                .releaseDate(request.releaseDate())
+                .releaseDate(request.releaseDate() == null ? LocalDate.now() : request.releaseDate())
                 .mainArtist(mainArtist)
                 .durationMs(duration)
                 .build();

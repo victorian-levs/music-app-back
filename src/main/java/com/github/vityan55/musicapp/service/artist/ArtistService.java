@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ArtistService {
 
     private final ArtistRepository artistRepository;
-    private final FeatRepository featRepository;
     private final UserRepository userRepository;
 
     public Page<Artist> findAll(Pageable pageable) {
